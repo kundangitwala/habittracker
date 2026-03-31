@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HabitFlow — Build Better Days</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     AUTH SCREEN
+═══════════════════════════════════════ -->
+<div id="auth-screen" class="screen active">
+  <div class="auth-bg">
+    <div class="auth-orb orb-1"></div>
+    <div class="auth-orb orb-2"></div>
+    <div class="auth-orb orb-3"></div>
+  </div>
+
+  <div class="auth-container">
+    <div class="auth-brand">
+      <span class="brand-icon">⬡</span>
+      <h1 class="brand-name">HabitFlow</h1>
+      <p class="brand-tagline">Build Better Days, One Habit at a Time</p>
+    </div>
+
+    <!-- Login Form -->
+    <div id="login-panel" class="auth-panel active">
+      <h2 class="panel-title">Welcome Back</h2>
+      <p class="panel-sub">Sign in to continue your streak</p>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-with-icon">
+          <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
+          <button class="toggle-pw" onclick="togglePw('login-password', this)">👁</button>
+        </div>
+      </div>
+      <p id="login-error" class="form-error"></p>
+      <button class="btn-primary" onclick="handleLogin()">Sign In</button>
+      <p class="auth-switch">Don't have an account? <a href="#" onclick="switchPanel('signup')">Create one</a></p>
+    </div>
+
+    <!-- Signup Form -->
+    <div id="signup-panel" class="auth-panel">
+      <h2 class="panel-title">Create Account</h2>
+      <p class="panel-sub">Start building better habits today</p>
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="signup-name" placeholder="Your name" autocomplete="name" />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="signup-email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-with-icon">
+          <input type="password" id="signup-password" placeholder="Min 6 characters" autocomplete="new-password" />
+          <button class="toggle-pw" onclick="togglePw('signup-password', this)">👁</button>
+        </div>
+      </div>
+      <p id="signup-error" class="form-error"></p>
+      <button class="btn-primary" onclick="handleSignup()">Get Started</button>
+      <p class="auth-switch">Already have an account? <a href="#" onclick="switchPanel('login')">Sign in</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MAIN APP SCREEN
+═══════════════════════════════════════ -->
+<div id="app-screen" class="screen">
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">⬡</span>
+      <span class="brand-name">HabitFlow</span>
+    </div>
+
+    <ul class="nav-links">
+      <li><a href="#" class="nav-link active" data-view="dashboard" onclick="switchView('dashboard', this)">
+        <span class="nav-icon">◈</span> Dashboard
+      </a></li>
+      <li><a href="#" class="nav-link" data-view="habits" onclick="switchView('habits', this)">
+        <span class="nav-icon">◆</span> My Habits
+      </a></li>
+      <li><a href="#" class="nav-link" data-view="calendar" onclick="switchView('calendar', this)">
+        <span class="nav-icon">◇</span> Calendar
+      </a></li>
+      <li><a href="#" class="nav-link" data-view="stats" onclick="switchView('stats', this)">
+        <span class="nav-icon">◉</span> Statistics
+      </a></li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <div class="theme-toggle" onclick="toggleTheme()">
+        <span id="theme-icon">☀</span>
+        <span id="theme-label">Light Mode</span>
+      </div>
+      <div class="user-info" id="sidebar-user"></div>
+      <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <!-- Mobile Top Bar -->
+  <div class="mobile-topbar">
+    <button class="hamburger" onclick="toggleSidebar()">☰</button>
+    <span class="brand-name">HabitFlow</span>
+    <button class="btn-sm" onclick="openAddModal()">+</button>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- ── DASHBOARD VIEW ── -->
+    <div id="view-dashboard" class="view active">
+      <div class="view-header">
+        <div>
+          <h2 class="view-title" id="dashboard-greeting">Good Morning!</h2>
+          <p class="view-sub" id="dashboard-date"></p>
+        </div>
+        <button class="btn-primary btn-add" onclick="openAddModal()">+ New Habit</button>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="stats-row" id="overview-stats"></div>
+
+      <!-- Today's Habits -->
+      <section class="section">
+        <h3 class="section-title">Today's Habits</h3>
+        <div id="today-habits-list" class="habits-grid"></div>
+      </section>
+
+      <!-- Weekly Bar Chart -->
+      <section class="section">
+        <h3 class="section-title">This Week</h3>
+        <div id="weekly-chart" class="weekly-chart"></div>
+      </section>
+    </div>
+
+    <!-- ── HABITS VIEW ── -->
+    <div id="view-habits" class="view">
+      <div class="view-header">
+        <div>
+          <h2 class="view-title">My Habits</h2>
+          <p class="view-sub">Manage all your habits</p>
+        </div>
+        <button class="btn-primary btn-add" onclick="openAddModal()">+ New Habit</button>
+      </div>
+      <div id="habits-list" class="habits-full-list"></div>
+    </div>
+
+    <!-- ── CALENDAR VIEW ── -->
+    <div id="view-calendar" class="view">
+      <div class="view-header">
+        <div>
+          <h2 class="view-title">Calendar</h2>
+          <p class="view-sub">Last 30 days overview</p>
+        </div>
+        <select id="calendar-habit-select" class="select-input" onchange="renderCalendar()"></select>
+      </div>
+      <div id="calendar-container" class="calendar-container"></div>
+    </div>
+
+    <!-- ── STATS VIEW ── -->
+    <div id="view-stats" class="view">
+      <div class="view-header">
+        <div>
+          <h2 class="view-title">Statistics</h2>
+          <p class="view-sub">Detailed analytics</p>
+        </div>
+      </div>
+      <div id="stats-container"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════
+     ADD / EDIT HABIT MODAL
+═══════════════════════════════════════ -->
+<div id="habit-modal" class="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAddModal()">✕</button>
+    <h3 id="modal-title" class="modal-heading">New Habit</h3>
+
+    <div class="form-group">
+      <label>Habit Name *</label>
+      <input type="text" id="habit-name-input" placeholder="e.g. Morning Meditation" maxlength="50" />
+    </div>
+
+    <div class="form-group">
+      <label>Emoji / Icon</label>
+      <div class="emoji-picker">
+        <input type="text" id="habit-emoji-input" placeholder="🧘" maxlength="2" class="emoji-input" />
+        <div class="emoji-presets">
+          <span onclick="setEmoji('🧘')">🧘</span>
+          <span onclick="setEmoji('🏃')">🏃</span>
+          <span onclick="setEmoji('📚')">📚</span>
+          <span onclick="setEmoji('💧')">💧</span>
+          <span onclick="setEmoji('🍎')">🍎</span>
+          <span onclick="setEmoji('😴')">😴</span>
+          <span onclick="setEmoji('✍️')">✍️</span>
+          <span onclick="setEmoji('🎯')">🎯</span>
+          <span onclick="setEmoji('💪')">💪</span>
+          <span onclick="setEmoji('🌿')">🌿</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Color Tag</label>
+      <div class="color-picker" id="color-picker">
+        <span class="color-swatch selected" data-color="#22c55e" style="background:#22c55e" onclick="selectColor(this)"></span>
+        <span class="color-swatch" data-color="#3b82f6" style="background:#3b82f6" onclick="selectColor(this)"></span>
+        <span class="color-swatch" data-color="#f97316" style="background:#f97316" onclick="selectColor(this)"></span>
+        <span class="color-swatch" data-color="#a855f7" style="background:#a855f7" onclick="selectColor(this)"></span>
+        <span class="color-swatch" data-color="#ec4899" style="background:#ec4899" onclick="selectColor(this)"></span>
+        <span class="color-swatch" data-color="#eab308" style="background:#eab308" onclick="selectColor(this)"></span>
+        <span class="color-swatch" data-color="#14b8a6" style="background:#14b8a6" onclick="selectColor(this)"></span>
+        <span class="color-swatch" data-color="#ef4444" style="background:#ef4444" onclick="selectColor(this)"></span>
+      </div>
+    </div>
+
+    <p id="modal-error" class="form-error"></p>
+    <input type="hidden" id="editing-habit-id" />
+    <button class="btn-primary full-width" onclick="saveHabit()">Save Habit</button>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
